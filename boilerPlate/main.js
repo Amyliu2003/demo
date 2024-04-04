@@ -1,9 +1,10 @@
 import './style.css'
 import * as THREE from 'three'
-import { addBoilerPlateMesh } from './addMeshes';
-import { addStandardPlateMesh } from './addMeshes';
+import { addBoilerPlateMesh,addLamberPlateMesh,addGlassPlateMesh,addStandardPlateMesh} from './addMeshes';
 import { addDirectionalLight } from './addLIght';
+import { OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 
+let tick=0;
 const scene = new THREE.Scene();
 const renderer =new THREE.WebGLRenderer({antialias:true});
 const camera =new THREE.PerspectiveCamera(
@@ -30,10 +31,15 @@ function init(){
   //import
   meshes.default=addBoilerPlateMesh();
   meshes.standard=addStandardPlateMesh();
+  meshes.lamber=addLamberPlateMesh();
+  meshes.glass=addGlassPlateMesh();
   meshes.direction=addDirectionalLight();
   scene.add(meshes.default);
   scene.add(meshes.standard);
+  scene.add(meshes.lamber);
+  scene.add(meshes.glass);
   scene.add(meshes.direction);
+  renderer.setClearColor( 0x5555cc, 1 );
   resize();
   animate();
 }
@@ -46,12 +52,34 @@ function resize(){
   })
 }
 
+const controls=new OrbitControls(camera,renderer.domElement);
+
 init();
 
 function animate(){
   requestAnimationFrame(animate);
+  tick+=0.005;
+  
   meshes.default.rotation.x+=0.01;
   meshes.standard.rotation.y+=0.01;
+  meshes
+  meshes.lamber.rotation.z+=0.01;
+
+
+  meshes.default.position.x=Math.sin(tick)*90;
+  meshes.default.position.y=Math.cos(tick)*90;
+  meshes.default.position.z=-Math.cos(tick)*10-100;
+  meshes.default.rotation.x=Math.sin(tick);
+
+  meshes.standard.position.x=Math.sin(tick)*5+5;
+  meshes.standard.position.y=Math.cos(tick)*5;
+  meshes.standard.position.z=-Math.sin(tick)*100-100;
+  meshes.standard.rotation.x=Math.sin(tick);
+
+  meshes.glass.rotation.x=Math.sin(tick)*0.5;
+  meshes.glass.rotation.y=Math.cos(tick)*0.5;
+  meshes.glass.rotation.z=Math.tan(tick)*0.2;
+
   renderer.render(scene,camera);
 }
 
